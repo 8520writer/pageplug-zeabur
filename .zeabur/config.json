@@ -1,6 +1,7 @@
 {
   "service": {
     "type": "docker-compose",
-    "port": 80
+    "port": 80,
+    "mainService": "pageplug6"
   }
 }

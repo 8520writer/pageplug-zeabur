@@ -5,21 +5,24 @@ services:
     image: index.docker.io/cloudtogouser/pageplug-ce:v1.9.37
     container_name: pageplug6
     ports:
-      - "8564:80"
-      - "8569:443"
+      - "80:80"
+      - "443:443"
     volumes:
       - ./stacks:/appsmith-stacks
     environment:
       - TZ=Asia/Shanghai
+      - APPSMITH_MONGODB_URI=mongodb://mongodb:27017/appsmith
+      - APPSMITH_ENCRYPTION_PASSWORD=appsmith
+      - APPSMITH_ENCRYPTION_SALT=appsmith
     restart: unless-stopped
-  #   # Uncomment the lines below to enable auto-update
-  #   labels:
-  #     com.centurylinklabs.watchtower.enable: "true"
+    depends_on:
+      - mongodb
 
-  # auto_update:
-  #   image: containrrr/watchtower:latest-dev
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   # Update check interval in seconds.
-  #   command: --schedule "0 0 * ? * *" --label-enable --cleanup
-  #   restart: unless-stopped
+  mongodb:
+    image: mongo:4.4.6
+    container_name: mongodb
+    volumes:
+      - ./mongodb-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=appsmith
+    restart: unless-stopped
